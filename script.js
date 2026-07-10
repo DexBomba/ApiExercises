@@ -4,32 +4,6 @@ const input = document.getElementById('playerInput');
 const button = document.getElementById('searchBtn');
 const app = document.getElementById('app');
 
-/*
-Old function: displays only one player.
-We replaced this with displayPlayers(players), which can display one or many players.
-function displayPlayer(player) {
-    app.innerHTML = `
-        <div>
-            <img 
-                src="${player.strThumb || ''}" 
-                alt="${player.strPlayer}" 
-                width="150" 
-                height="150"
-                onerror="this.onerror=null; this.src=''; this.alt='No image';"
-            >
-            <h1>${player.strPlayer}</h1>
-            <p><strong>Nationality:</strong> ${player.strNationality || 'N/A'}</p>
-            <p><strong>Position:</strong> ${player.strPosition || 'N/A'}</p>
-            <p><strong>Team:</strong> ${player.strTeam || 'N/A'}</p>
-            <p><strong>Date of Birth:</strong> ${player.dateBorn || 'N/A'}</p>
-            <p><strong>Height:</strong> ${player.strHeight || 'N/A'}</p>
-            <p><strong>Weight:</strong> ${player.strWeight || 'N/A'}</p>
-            <hr>
-            <p>${player.strDescriptionEN ? player.strDescriptionEN.substring(0, 400) + '…' : 'No description.'}</p>
-        </div>
-    `;
-} */
-
 // Loops through all players returned by the API and displays them on the page.
 function displayPlayers(players) {
     // Start the HTML with the total number of players found
@@ -61,19 +35,15 @@ function displayPlayers(players) {
         `;
     });
 
+    if (players.length === 1) {
+        html += `<p style="color: #555; font-style: italic;">
+            ⚠️ The free API key shows only one result. Upgrade for full search.
+        </p>`;
+    }
+
     // Display all players on the page
     app.innerHTML = html;
 }
-/*
-function displayMultiple(players) {
-    let html = `<p><strong>${players.length} player(s) found:</strong></p><ul>`;
-    players.forEach(p => {
-        html += `<li>${p.strPlayer} – ${p.strTeam || 'N/A'} (${p.strPosition || 'N/A'})</li>`;
-    });
-    html += '</ul><hr><p><em>Showing details of the first player:</em></p>';
-    app.innerHTML = html;
-    displayPlayer(players[0]); //it forces page to show only one player
-} */
 
 async function searchPlayer(name) {
     app.innerHTML = '<p>Loading…</p>';
@@ -100,11 +70,6 @@ async function searchPlayer(name) {
         // Display all players returned by the API. If only one appears, the API only returned one
         displayPlayers(players);
 
-        // if (players.length === 1) {
-        //     displayPlayer(players[0]);
-        // } else {
-        //     displayMultiple(players);
-        // }
     } catch (error) {
         app.innerHTML = `<p style="color: red;">⚠️ ${error.message}</p>`;
     }
